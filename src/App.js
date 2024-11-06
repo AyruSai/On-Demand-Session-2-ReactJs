@@ -33,8 +33,31 @@ class App extends Component {
     mobileNo: '',
   }
 
+  toggleIsFavorite = id => {
+    this.setState(prevState => ({
+      contactsList: prevState.contactsList.map(eachContact => {
+        if (id === eachContact.id) {
+          return {...eachContact, isFavorite: !eachContact.isFavorite}
+        }
+        return eachContact
+      }),
+    }))
+  }
+
   onAddContact = event => {
     event.preventDefault()
+    const {name, mobileNo} = this.state
+    const newContact = {
+      id: uuidv4(),
+      name,
+      mobileNo,
+      isFavorite: false,
+    }
+    this.setState(prevState => ({
+      contactsList: [...prevState.contactsList, newContact],
+      name: '',
+      mobileNo: '',
+    }))
   }
 
   onChangeMobileNo = event => {
@@ -75,7 +98,11 @@ class App extends Component {
               <p className="table-header-cell">Mobile Number</p>
             </li>
             {contactsList.map(eachContact => (
-              <ContactItem key={eachContact.id} contactDetails={eachContact} />
+              <ContactItem
+                key={eachContact.id}
+                contactDetails={eachContact}
+                toggleIsFavorite={this.toggleIsFavorite}
+              />
             ))}
           </ul>
         </div>
